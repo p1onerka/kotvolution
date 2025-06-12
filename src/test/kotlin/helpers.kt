@@ -1,4 +1,18 @@
+import model.*
+import model.sequential.convolute
+import org.bytedeco.opencv.global.opencv_imgcodecs
+import org.bytedeco.opencv.global.opencv_imgproc
 import org.bytedeco.opencv.opencv_core.Mat
+
+val shiftLeft = arrayOf(
+    doubleArrayOf(0.0, 0.0, 0.0),
+    doubleArrayOf(1.0, 0.0, 0.0),
+    doubleArrayOf(0.0, 0.0, 0.0))
+val shiftRight = arrayOf(
+    doubleArrayOf(0.0, 0.0, 0.0),
+    doubleArrayOf(0.0, 0.0, 1.0),
+    doubleArrayOf(0.0, 0.0, 0.0))
+
 
 fun assertEqualsMats(mat1: Mat, mat2: Mat) {
     if (mat1.empty() && mat2.empty()) return
@@ -17,5 +31,36 @@ fun assertEqualsMats(mat1: Mat, mat2: Mat) {
             assert(mat1G == mat2G)
             assert(mat1R == mat2R)
         }
+    }
+}
+
+open class ConvolutionTestTemplate {
+
+    fun checkGrayscaleID(path: String, func: (Mat, Array<DoubleArray>, Double, Double)->Mat) {
+        val image = opencv_imgcodecs.imread(path)
+        val grayScale = Mat()
+        opencv_imgproc.cvtColor(image, grayScale, opencv_imgproc.COLOR_BGR2GRAY)
+        val res = func(grayScale, id, factorId, biasId)
+        assertEqualsMats(grayScale, res)
+    }
+
+    fun checkColorfulID(path: String, func: (Mat, Array<DoubleArray>, Double, Double) -> Mat) {
+        val image = opencv_imgcodecs.imread(path)
+        val res = func(image, id, factorId, biasId)
+        assertEqualsMats(image, res)
+    }
+
+    fun checkColorfulBlur(path: String, func: (Mat, Array<DoubleArray>, Double, Double) -> Mat) {
+        val image = opencv_imgcodecs.imread(path)
+        val exp = convolute(image, blur, factorBlur, biasBlur)
+        val act = func(image, blur, factorBlur, biasBlur)
+        assertEqualsMats(exp, act)
+    }
+
+    fun checkShiftsIdentity(path: String, func: (Mat, Array<DoubleArray>, Double, Double) -> Mat) {
+        val image = opencv_imgcodecs.imread(path)
+        val res = func(image, shiftLeft, 1.0, 0.0)
+        val res2 = func(res, shiftRight, 1.0, 0.0)
+        assertEqualsMats(image, res2)
     }
 }
