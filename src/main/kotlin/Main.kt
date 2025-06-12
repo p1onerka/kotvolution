@@ -11,9 +11,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import kotlinx.coroutines.runBlocking
 
 import model.*
+import model.parallel.convoluteAsyncPixel
+import model.parallel.convoluteAsyncX
+import model.parallel.convoluteAsyncY
 import model.sequential.convolute
+import org.bytedeco.opencv.global.opencv_imgcodecs
+import org.bytedeco.opencv.global.opencv_imgproc
+import org.bytedeco.opencv.opencv_core.Mat
 import view.mainScreen
 import viewModel.MainViewModel
 import java.awt.Dimension
@@ -35,33 +42,17 @@ fun main(args: Array<String>) = application {
     /*Window(onCloseRequest = ::exitApplication) {
         App()
     }*/
-    /*val inputPath = if (args.isEmpty()) { "src/main/resources/night.jpeg" } else args[0]
-    val input = uploadPic(inputPath)
-    val testF = arrayOf(
-    doubleArrayOf(0.0, 0.2, 0.0),
-    doubleArrayOf(0.2, 0.2, 0.2),
-    doubleArrayOf(0.0, 0.2, 0.0))
-    val testF2 = arrayOf(
-        doubleArrayOf(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0),
-        doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0))
-    val res = convolute(input, testF, 1.0, 0.0)
-    val outputPath = if (args.size < 2) { "src/main/resources/night_out.jpeg" } else args[1]
-    println("IM HERE")
-    downloadPic(outputPath, res)*/
     val viewModel = MainViewModel()
-
     Window(
         onCloseRequest = ::exitApplication,
-        title = "Image Convolution App"
+        title = "\uD83D\uDC08\u200D⬛Kotvolution\uD83D\uDC08\u200D⬛"
     ) {
         window.minimumSize = Dimension(1050, 750)
         mainScreen(viewModel)
     }
+    /*val image = opencv_imgcodecs.imread("src/main/resources/night.jpeg")
+    //val grayScale = Mat()
+    opencv_imgproc.cvtColor(image, image, opencv_imgproc.COLOR_BGR2GRAY)
+    val res = convoluteAsyncPixel(image, id, factorId, biasId)
+    downloadPic("src/main/resources/night_out.jpeg", res)*/
 }
