@@ -1,26 +1,47 @@
 //import org.junit.jupiter.api.Assertions.assertEquals
 import kotlin.test.Test
 import model.*
+import model.parallel.convoluteAsyncX
 import model.sequential.convolute
 import org.bytedeco.opencv.global.opencv_imgcodecs
 import org.bytedeco.opencv.global.opencv_imgproc.*
 import org.bytedeco.opencv.opencv_core.Mat
 
-class ConvolutionTest {
-
+class SequentialTest: ConvolutionTestTemplate() {
     @Test
-    fun `grayscale image does not change after applying ID filter`() {
-        val image = opencv_imgcodecs.imread("src/test/resources/find_pants.jpeg")
-        val grayScale = Mat()
-        cvtColor(image, grayScale, COLOR_BGR2GRAY)
-        val res = convolute(grayScale, id, factorId, biasId)
-        assertEqualsMats(grayScale, res)
+    fun `colorful image 200x200 does not change after applying ID filter`() {
+        checkColorfulID("src/test/resources/200x200.jpeg", ::convolute)
     }
-
     @Test
-    fun `colorful image does not change after applying ID filter`() {
-        val image = opencv_imgcodecs.imread("src/test/resources/find_pants.jpeg")
-        val res = convolute(image, id, factorId, biasId)
-        assertEqualsMats(image, res)
+    fun `grayscale image 200x200 does not change after applying ID filter`() {
+        checkGrayscaleID("src/test/resources/200x200.jpeg", ::convolute)
+    }
+    @Test
+    fun `colorful image 200x200 does not change after applying shiftLeft and shiftRight filters`() {
+        checkShiftsIdentity("src/test/resources/200x200.jpeg", ::convolute)
+    }
+    @Test
+    fun `colorful image 400x400 does not change after applying ID filter`() {
+        checkColorfulID("src/test/resources/400x400.jpeg", ::convolute)
+    }
+    @Test
+    fun `grayscale image 400x400 does not change after applying ID filter`() {
+        checkGrayscaleID("src/test/resources/400x400.jpeg", ::convolute)
+    }
+    @Test
+    fun `colorful image 400x400 does not change after applying shiftLeft and shiftRight filters`() {
+        checkShiftsIdentity("src/test/resources/400x400.jpeg", ::convolute)
+    }
+    @Test
+    fun `colorful image 640x426 does not change after applying ID filter`() {
+        checkColorfulID("src/test/resources/640x426.jpeg", ::convolute)
+    }
+    @Test
+    fun `grayscale image 640x426 does not change after applying ID filter`() {
+        checkGrayscaleID("src/test/resources/640x426.jpeg", ::convolute)
+    }
+    @Test
+    fun `colorful image 640x426 does not change after applying shiftLeft and shiftRight filters`() {
+        checkShiftsIdentity("src/test/resources/640x426.jpeg", ::convolute)
     }
 }
