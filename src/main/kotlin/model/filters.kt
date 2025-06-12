@@ -7,6 +7,13 @@ val blur = arrayOf(
 val factorBlur = 1.0
 val biasBlur = 0.0
 
+val id = arrayOf(
+    doubleArrayOf(0.0, 0.0, 0.0),
+    doubleArrayOf(0.0, 1.0, 0.0),
+    doubleArrayOf(0.0, 0.0, 0.0))
+val factorId = 1.0
+val biasId = 0.0
+
 val motion = arrayOf(
     doubleArrayOf(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
     doubleArrayOf(0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
