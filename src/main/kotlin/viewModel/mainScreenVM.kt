@@ -1,9 +1,6 @@
 package viewModel
 
-
-/*import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue*/
+import kotlinx.coroutines.runBlocking
 import model.*
 import model.parallel.convoluteAsyncPixel
 import model.parallel.convoluteAsyncX
@@ -27,7 +24,7 @@ class MainViewModel {
         }
     }
 
-    suspend fun applyFilter(filter: String, method: String, path: String): String {
+    fun applyFilter(filter: String, method: String, path: String): String = runBlocking {
         val input = uploadPic(path)
         val (matrix, factor, bias) = chooseFilter(filter)
         val result = when (method) {
@@ -42,8 +39,7 @@ class MainViewModel {
         val pathNoType = path.substring(0, typeInd)
         val pathType = path.substring(typeInd)
         val outPath = pathNoType + "_with$filter" + pathType
-        //println("OUTPATH is $outPath")
         downloadPic(outPath, result)
-        return outPath
+        return@runBlocking outPath
     }
 }
