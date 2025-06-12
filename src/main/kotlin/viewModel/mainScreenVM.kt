@@ -5,6 +5,9 @@ package viewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue*/
 import model.*
+import model.parallel.convoluteAsyncPixel
+import model.parallel.convoluteAsyncX
+import model.parallel.convoluteAsyncY
 import model.sequential.convolute
 
 class MainViewModel {
@@ -13,16 +16,26 @@ class MainViewModel {
     /*fun loadImage(path: String) {
         imageLoaded = true
     }*/
+    fun chooseFilter (filter: String): Triple<Array<DoubleArray>, Double, Double> {
+        return when (filter) {
+            "Blur" -> Triple(blur, factorBlur, biasBlur)
+            "ID" -> Triple(id, factorId, biasId)
+            "Horizontal_edges" -> Triple(horEdges, factorHorEdges, biasHorEdges)
+            "Vertical_edges" -> Triple(verEdges, factorVerEdges, biasVerEdges)
+            "Sharpen" -> Triple(sharpen, factorSharpen, biasSharpen)
+            else -> Triple(motion, factorMotion, biasMotion)
+        }
+    }
 
-    fun applyFilter(filter: String, path: String): String {
+    suspend fun applyFilter(filter: String, method: String, path: String): String {
         val input = uploadPic(path)
-        val result = when (filter) {
-            "Blur" -> convolute(input, blur, factorBlur, biasBlur)
-            "ID" -> convolute(input, id, factorId, biasId)
-            "Horizontal_edges" -> convolute(input, horEdges, factorHorEdges, biasHorEdges)
-            "Vertical_edges" -> convolute(input, verEdges, factorVerEdges, biasVerEdges)
-            "Sharpen" -> convolute(input, sharpen, factorSharpen, biasSharpen)
-            else -> convolute(input, motion, factorMotion, biasMotion)
+        val (matrix, factor, bias) = chooseFilter(filter)
+        val result = when (method) {
+            "Sequential" -> convolute(input, matrix, factor, bias)
+            "Parallel pixel-wise" -> convoluteAsyncPixel(input, matrix, factor, bias)
+            "Parallel row-wise" -> convoluteAsyncY(input, matrix, factor, bias)
+            "Parallel column-wise" -> convoluteAsyncX(input, matrix, factor, bias)
+            else -> convolute(input, matrix, factor, bias)
         }
 
         val typeInd = path.lastIndexOf('.')
