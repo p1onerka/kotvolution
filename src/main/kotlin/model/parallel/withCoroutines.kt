@@ -5,7 +5,7 @@ import org.bytedeco.opencv.opencv_core.Mat
 import kotlin.math.max
 import kotlin.math.min
 
-suspend fun convoluteAsyncY(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = coroutineScope {
+fun convoluteAsyncY(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
@@ -41,10 +41,10 @@ suspend fun convoluteAsyncY(pic: Mat, filter: Array<DoubleArray>, factor: Double
     }
 
     jobs.awaitAll()
-    return@coroutineScope res
+    return@runBlocking res
 }
 
-suspend fun convoluteAsyncX(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = coroutineScope {
+fun convoluteAsyncX(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
@@ -80,10 +80,10 @@ suspend fun convoluteAsyncX(pic: Mat, filter: Array<DoubleArray>, factor: Double
     }
 
     jobs.awaitAll()
-    return@coroutineScope res
+    return@runBlocking res
 }
 
-suspend fun convoluteAsyncPixel (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = coroutineScope {
+fun convoluteAsyncPixel (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
@@ -102,7 +102,6 @@ suspend fun convoluteAsyncPixel (pic: Mat, filter: Array<DoubleArray>, factor: D
                         val imageX = (x - filterSize / 2 + filterX + w) % w
                         val imageY = (y - filterSize / 2 + filterY + h) % h
 
-                        val buf = ByteArray(3)
                         blue += (pic.ptr(imageY, imageX).get(0).toInt() and 0xFF).toDouble() * filter[filterY][filterX]
                         green += (pic.ptr(imageY, imageX).get(1).toInt() and 0xFF).toDouble() * filter[filterY][filterX]
                         red += (pic.ptr(imageY, imageX).get(2).toInt() and 0xFF).toDouble() * filter[filterY][filterX]
@@ -122,5 +121,5 @@ suspend fun convoluteAsyncPixel (pic: Mat, filter: Array<DoubleArray>, factor: D
     }
 
     jobs.awaitAll()
-    return@coroutineScope res
+    return@runBlocking res
 }
