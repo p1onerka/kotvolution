@@ -13,8 +13,10 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 
 import model.*
-//import view.mainScreen
+import model.sequential.convolute
+import view.mainScreen
 import viewModel.MainViewModel
+import java.awt.Dimension
 
 @Composable
 @Preview
@@ -33,7 +35,7 @@ fun main(args: Array<String>) = application {
     /*Window(onCloseRequest = ::exitApplication) {
         App()
     }*/
-    /*val inputPath = if (args.isEmpty()) { "src/main/resources/happybd.jpeg" } else args[0]
+    /*val inputPath = if (args.isEmpty()) { "src/main/resources/night.jpeg" } else args[0]
     val input = uploadPic(inputPath)
     val testF = arrayOf(
     doubleArrayOf(0.0, 0.2, 0.0),
@@ -49,8 +51,9 @@ fun main(args: Array<String>) = application {
         doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0),
         doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0),
         doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0))
-    val res = convolute(input, testF2, 1.0/9.0, 0.0)
-    val outputPath = if (args.size < 2) { "src/main/resources/happybd_out.jpeg" } else args[1]
+    val res = convolute(input, testF, 1.0, 0.0)
+    val outputPath = if (args.size < 2) { "src/main/resources/night_out.jpeg" } else args[1]
+    println("IM HERE")
     downloadPic(outputPath, res)*/
     val viewModel = MainViewModel()
 
@@ -58,6 +61,7 @@ fun main(args: Array<String>) = application {
         onCloseRequest = ::exitApplication,
         title = "Image Convolution App"
     ) {
-        //mainScreen(viewModel, this.window)
+        window.minimumSize = Dimension(1050, 750)
+        mainScreen(viewModel)
     }
 }
