@@ -291,7 +291,7 @@ fun mainScreen(viewModel: MainScreenViewModel) {
                     colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                     modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
                     contentPadding = PaddingValues(0.dp),
-                    enabled = isAbleToStart
+                    enabled = isAbleToStart,
                 ) {
                     Text("Convolute with filter", fontSize = fontSize, textAlign = TextAlign.Center, color = textColor)
                 }
