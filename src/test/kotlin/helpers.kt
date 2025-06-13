@@ -1,5 +1,5 @@
 import model.*
-import model.sequential.convolute
+import model.sequential.convolve
 import org.bytedeco.opencv.global.opencv_imgcodecs
 import org.bytedeco.opencv.global.opencv_imgproc
 import org.bytedeco.opencv.opencv_core.Mat
@@ -52,7 +52,7 @@ open class ConvolutionTestTemplate {
 
     fun checkColorfulBlur(path: String, func: (Mat, Array<DoubleArray>, Double, Double) -> Mat) {
         val image = opencv_imgcodecs.imread(path)
-        val exp = convolute(image, blur, factorBlur, biasBlur)
+        val exp = convolve(image, blur, factorBlur, biasBlur)
         val act = func(image, blur, factorBlur, biasBlur)
         assertEqualsMats(exp, act)
     }
@@ -83,7 +83,7 @@ open class ConvolutionFrameTestTemplate {
 
     fun checkColorfulBlur(path: String, func: (Mat, Array<DoubleArray>, Double, Double, Int, Int) -> Mat, w: Int, h: Int) {
         val image = opencv_imgcodecs.imread(path)
-        val exp = convolute(image, blur, factorBlur, biasBlur)
+        val exp = convolve(image, blur, factorBlur, biasBlur)
         val act = func(image, blur, factorBlur, biasBlur, w, h)
         assertEqualsMats(exp, act)
     }
