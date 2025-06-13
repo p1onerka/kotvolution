@@ -5,7 +5,7 @@ import org.bytedeco.opencv.opencv_core.Mat
 import kotlin.math.max
 import kotlin.math.min
 
-fun convoluteAsyncY(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
+fun convolveY(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
@@ -42,7 +42,7 @@ fun convoluteAsyncY(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: 
     return@runBlocking res
 }
 
-fun convoluteAsyncX(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
+fun convolveX(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
@@ -80,7 +80,7 @@ fun convoluteAsyncX(pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: 
     return@runBlocking res
 }
 
-fun convoluteAsyncPixel (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
+fun convolvePixel (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
@@ -117,7 +117,7 @@ fun convoluteAsyncPixel (pic: Mat, filter: Array<DoubleArray>, factor: Double, b
     return@runBlocking res
 }
 
-fun convoluteAsyncFrame (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double, frameW: Int, frameH: Int): Mat = runBlocking {
+fun convolveFrame (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double, frameW: Int, frameH: Int): Mat = runBlocking {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()
