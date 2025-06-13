@@ -4,7 +4,12 @@ import org.bytedeco.opencv.opencv_core.Mat
 import kotlin.math.max
 import kotlin.math.min
 
-fun convolve (pic: Mat, filter: Array<DoubleArray>, factor: Double, bias: Double): Mat {
+fun convolve(
+    pic: Mat,
+    filter: Array<DoubleArray>,
+    factor: Double,
+    bias: Double,
+): Mat {
     val w = pic.cols()
     val h = pic.rows()
     val res = pic.clone()

@@ -2,11 +2,31 @@ package view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import viewModel.MainScreenViewModel
 import java.io.File
 import javax.imageio.ImageIO
-import viewModel.MainViewModel
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -30,41 +50,42 @@ val buttonColor = Color(4, 52, 96)
 val textColor = Color.White
 
 @Composable
-fun mainScreen(viewModel: MainViewModel) {
+fun mainScreen(viewModel: MainScreenViewModel) {
     var inputPath by remember { mutableStateOf<String?>(null) }
     var outputPath by remember { mutableStateOf<String?>(null) }
     var selectedFilter by remember { mutableStateOf("") }
     var selectedMethod by remember { mutableStateOf("") }
     var errMes by remember { mutableStateOf<String?>(null) }
-    var isSmthRunning by remember {mutableStateOf(false)}
-    var frameWidth by remember {mutableStateOf(50)}
-    var frameHeight by remember {mutableStateOf(50)}
-    var frameSizeErr by remember {mutableStateOf<String?>(null)}
+    var isSmthRunning by remember { mutableStateOf(false) }
+    var frameWidth by remember { mutableStateOf(50) }
+    var frameHeight by remember { mutableStateOf(50) }
+    var frameSizeErr by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // LEFT SIDE, INPUT
         Column(
             modifier = Modifier.weight(1f).fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = {
-                val chooser = JFileChooser()
-                chooser.fileFilter = FileNameExtensionFilter("JPEG files", "jpeg")
-                val exCode = chooser.showOpenDialog(null)
-                if (exCode == JFileChooser.APPROVE_OPTION) {
-                    val file = chooser.selectedFile
-                    if (file.extension.lowercase() == "jpeg") {
-                        inputPath = file.absolutePath
-                        errMes = null
-                        //viewModel.loadImage(file.absolutePath)
-                    } else {
-                        errMes = "File should be .jpeg"
+            Button(
+                onClick = {
+                    val chooser = JFileChooser()
+                    chooser.fileFilter = FileNameExtensionFilter("JPEG files", "jpeg")
+                    val exCode = chooser.showOpenDialog(null)
+                    if (exCode == JFileChooser.APPROVE_OPTION) {
+                        val file = chooser.selectedFile
+                        if (file.extension.lowercase() == "jpeg") {
+                            inputPath = file.absolutePath
+                            errMes = null
+                            // viewModel.loadImage(file.absolutePath)
+                        } else {
+                            errMes = "File should be .jpeg"
+                        }
                     }
-                }
-            },
-            modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
-                colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor)
+                },
+                modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
+                colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
             ) {
                 Text("Upload image", fontSize = fontSize, textAlign = TextAlign.Center, color = textColor)
             }
@@ -74,9 +95,10 @@ fun mainScreen(viewModel: MainViewModel) {
                 Spacer(Modifier.height(8.dp))
             }
             if (inputPath != null) {
-                val inpImage = remember(inputPath) {
-                    ImageIO.read(inputPath?.let { File(it) }).toComposeImageBitmap()
-                }
+                val inpImage =
+                    remember(inputPath) {
+                        ImageIO.read(inputPath?.let { File(it) }).toComposeImageBitmap()
+                    }
                 Image(bitmap = inpImage, contentDescription = "Input")
 
                 Spacer(Modifier.height(16.dp))
@@ -88,11 +110,18 @@ fun mainScreen(viewModel: MainViewModel) {
                         onClick = { filtersExpanded = true },
                         colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                         modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
-                        contentPadding = PaddingValues(0.dp)) {
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
                         Text("Filter: $selectedFilter", fontSize = fontSize, textAlign = TextAlign.Center, color = textColor)
                     }
-                    DropdownMenu(expanded = filtersExpanded, onDismissRequest = { filtersExpanded = false }, modifier = Modifier.background(
-                        buttonColor)) {
+                    DropdownMenu(
+                        expanded = filtersExpanded,
+                        onDismissRequest = { filtersExpanded = false },
+                        modifier =
+                            Modifier.background(
+                                buttonColor,
+                            ),
+                    ) {
                         DropdownMenuItem(onClick = {
                             selectedFilter = "Blur"
                             filtersExpanded = false
@@ -122,19 +151,25 @@ fun mainScreen(viewModel: MainViewModel) {
 
                 Spacer(Modifier.height(16.dp))
 
-                //METHODS MENU
+                // METHODS MENU
                 var methodsExpanded by remember { mutableStateOf(false) }
                 Box {
                     Button(
                         onClick = { methodsExpanded = true },
                         colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                         modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
-                        contentPadding = PaddingValues(0.dp)
+                        contentPadding = PaddingValues(0.dp),
                     ) {
                         Text("Method: $selectedMethod", fontSize = fontSize, textAlign = TextAlign.Center, color = textColor)
                     }
-                    DropdownMenu(expanded = methodsExpanded, onDismissRequest = { methodsExpanded = false }, modifier = Modifier.background(
-                        buttonColor)) {
+                    DropdownMenu(
+                        expanded = methodsExpanded,
+                        onDismissRequest = { methodsExpanded = false },
+                        modifier =
+                            Modifier.background(
+                                buttonColor,
+                            ),
+                    ) {
                         DropdownMenuItem(onClick = {
                             selectedMethod = "Sequential"
                             methodsExpanded = false
@@ -159,11 +194,11 @@ fun mainScreen(viewModel: MainViewModel) {
                 }
 
                 if (selectedMethod == "Parallel via frames") {
-                    Column (modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Choose frame size, default 50x50",
                             fontSize = fontSize,
-                            color = buttonColor
+                            color = buttonColor,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         TextField(
@@ -180,15 +215,16 @@ fun mainScreen(viewModel: MainViewModel) {
                             label = {
                                 Text(
                                     text = "Frame width:",
-                                    color = textColor
+                                    color = textColor,
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = textColor,
-                                backgroundColor = buttonColor,
-                                cursorColor = Color.White,
-                                focusedIndicatorColor = Color.White
-                            )
+                            colors =
+                                TextFieldDefaults.textFieldColors(
+                                    textColor = textColor,
+                                    backgroundColor = buttonColor,
+                                    cursorColor = Color.White,
+                                    focusedIndicatorColor = Color.White,
+                                ),
                         )
                         TextField(
                             value = frameHeight.toString(),
@@ -204,15 +240,16 @@ fun mainScreen(viewModel: MainViewModel) {
                             label = {
                                 Text(
                                     text = "Frame height:",
-                                    color = textColor
+                                    color = textColor,
                                 )
                             },
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = textColor,
-                                backgroundColor = buttonColor,
-                                cursorColor = Color.White,
-                                focusedIndicatorColor = Color.White
-                            )
+                            colors =
+                                TextFieldDefaults.textFieldColors(
+                                    textColor = textColor,
+                                    backgroundColor = buttonColor,
+                                    cursorColor = Color.White,
+                                    focusedIndicatorColor = Color.White,
+                                ),
                         )
                         Spacer(Modifier.height(16.dp))
                         frameSizeErr?.let {
@@ -236,8 +273,8 @@ fun mainScreen(viewModel: MainViewModel) {
                     },
                     colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                     modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
-                    contentPadding = PaddingValues(0.dp)
-                    //enabled = inputPath != null
+                    contentPadding = PaddingValues(0.dp),
+                    // enabled = inputPath != null
                 ) {
                     Text("Convolute with filter", fontSize = fontSize, textAlign = TextAlign.Center, color = textColor)
                 }
@@ -246,21 +283,22 @@ fun mainScreen(viewModel: MainViewModel) {
 
         Spacer(Modifier.width(24.dp))
 
-        //RIGHT SIDE, OUTPUT
+        // RIGHT SIDE, OUTPUT
         Column(
             modifier = Modifier.weight(1f).fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (outputPath != null) {
                 Spacer(Modifier.height(66.dp))
-                val outImage = remember(outputPath) {
-                    ImageIO.read(outputPath?.let { File(it) }).toComposeImageBitmap()
-                }
+                val outImage =
+                    remember(outputPath) {
+                        ImageIO.read(outputPath?.let { File(it) }).toComposeImageBitmap()
+                    }
                 Image(bitmap = outImage, contentDescription = "Result")
                 Spacer(Modifier.height(16.dp))
             } else if (isSmthRunning) {
-                CircularProgressIndicator(color = buttonColor) }
-            else {
+                CircularProgressIndicator(color = buttonColor)
+            } else {
                 Text("Result will be here", fontSize = fontSize, textAlign = TextAlign.Center)
             }
         }

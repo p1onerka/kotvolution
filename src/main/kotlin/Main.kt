@@ -1,27 +1,12 @@
-/* there will be GUI if I'm not too lazy */
+// there will be GUI if I'm not too lazy
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-
-import model.*
-//import model.sequential.convolve
-import org.bytedeco.opencv.global.opencv_imgcodecs
 import view.mainScreen
-import viewModel.MainViewModel
+import viewModel.MainScreenViewModel
 import java.awt.Dimension
-import kotlin.math.pow
-import kotlin.math.sqrt
-import kotlin.time.DurationUnit
-import kotlin.time.measureTime
+
+// import model.sequential.convolve
 
 /*fun experimentHelper (path: String) {
     val image = opencv_imgcodecs.imread(path)
@@ -38,13 +23,14 @@ import kotlin.time.measureTime
     println("time is $mean ms +- $sem ms")
 }*/
 
-fun main(args: Array<String>) = application {
-    val viewModel = MainViewModel()
-    Window(
-        onCloseRequest = ::exitApplication,
-        title = "\uD83D\uDC08\u200D⬛Kotvolution\uD83D\uDC08\u200D⬛"
-    ) {
-        window.minimumSize = Dimension(1050, 750)
-        mainScreen(viewModel)
+fun main() =
+    application {
+        val viewModel = MainScreenViewModel()
+        Window(
+            onCloseRequest = ::exitApplication,
+            title = "\uD83D\uDC08\u200D⬛Kotvolution\uD83D\uDC08\u200D⬛",
+        ) {
+            window.minimumSize = Dimension(1050, 750)
+            mainScreen(viewModel)
+        }
     }
-}
