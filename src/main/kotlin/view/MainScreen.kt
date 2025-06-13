@@ -61,6 +61,9 @@ fun mainScreen(viewModel: MainScreenViewModel) {
     var frameHeight by remember { mutableStateOf(50) }
     var frameSizeErr by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val isMethodFrames = selectedMethod == "Parallel via frames"
+    val isMethodValid = (!isMethodFrames) || (frameWidth > 0 && frameHeight > 0)
+    val isAbleToStart = inputPath != null && selectedFilter.isNotEmpty() && selectedMethod.isNotEmpty() && isMethodValid
 
     Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         // LEFT SIDE, INPUT
@@ -201,15 +204,22 @@ fun mainScreen(viewModel: MainScreenViewModel) {
                             color = buttonColor,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
+
+                        var frameWidthText by remember { mutableStateOf("50") }
                         TextField(
-                            value = frameWidth.toString(),
+                            value = frameWidthText,
                             onValueChange = { newValue ->
+                                frameWidthText = newValue
                                 val num = newValue.toIntOrNull()
-                                if ((num != null) && (num > 0)) {
-                                    frameWidth = num
-                                    frameSizeErr = null
-                                } else {
+                                if ((num == null) || (num < 0)) {
                                     frameSizeErr = "Width must be >0"
+                                } else {
+                                    if (selectedMethod == "Parallel via frames" && num == 0) {
+                                        frameSizeErr = "Width must be >0"
+                                    } else {
+                                        frameWidth = num
+                                        frameSizeErr = null
+                                    }
                                 }
                             },
                             label = {
@@ -226,15 +236,22 @@ fun mainScreen(viewModel: MainScreenViewModel) {
                                     focusedIndicatorColor = Color.White,
                                 ),
                         )
+
+                        var frameHeightText by remember { mutableStateOf("50") }
                         TextField(
-                            value = frameHeight.toString(),
+                            value = frameHeightText,
                             onValueChange = { newValue ->
+                                frameHeightText = newValue
                                 val num = newValue.toIntOrNull()
-                                if ((num != null) && (num > 0)) {
-                                    frameHeight = num
-                                    frameSizeErr = null
-                                } else {
+                                if ((num == null) || (num < 0)) {
                                     frameSizeErr = "Height must be >0"
+                                } else {
+                                    if (selectedMethod == "Parallel via frames" && num == 0) {
+                                        frameSizeErr = "Height must be >0"
+                                    } else {
+                                        frameHeight = num
+                                        frameSizeErr = null
+                                    }
                                 }
                             },
                             label = {
@@ -274,7 +291,7 @@ fun mainScreen(viewModel: MainScreenViewModel) {
                     colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                     modifier = Modifier.size(width = buttonWidth, height = buttonHeight),
                     contentPadding = PaddingValues(0.dp),
-                    // enabled = inputPath != null
+                    enabled = isAbleToStart
                 ) {
                     Text("Convolute with filter", fontSize = fontSize, textAlign = TextAlign.Center, color = textColor)
                 }
@@ -288,7 +305,7 @@ fun mainScreen(viewModel: MainScreenViewModel) {
             modifier = Modifier.weight(1f).fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (outputPath != null) {
+            if (outputPath != null && !isSmthRunning) {
                 Spacer(Modifier.height(66.dp))
                 val outImage =
                     remember(outputPath) {
