@@ -6,7 +6,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  Lint & Tests:
+  Lint and Tests:
     runs-on: ubuntu-latest
 
     steps:
