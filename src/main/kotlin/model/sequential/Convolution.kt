@@ -26,7 +26,6 @@ fun convolve(
                     val imageX = (x - filterSize / 2 + filterX + w) % w
                     val imageY = (y - filterSize / 2 + filterY + h) % h
 
-                    val buf = ByteArray(3)
                     blue += (pic.ptr(imageY, imageX).get(0).toInt() and 0xFF).toDouble() * filter[filterY][filterX]
                     green += (pic.ptr(imageY, imageX).get(1).toInt() and 0xFF).toDouble() * filter[filterY][filterX]
                     red += (pic.ptr(imageY, imageX).get(2).toInt() and 0xFF).toDouble() * filter[filterY][filterX]
