@@ -6,7 +6,7 @@ import model.parallel.convolveFrame
 import model.parallel.convolvePixel
 import model.parallel.convolveX
 import model.parallel.convolveY
-import model.sequential.convolute
+import model.sequential.convolve
 
 class MainViewModel {
     //private var imageLoaded by mutableStateOf(false)
@@ -29,12 +29,12 @@ class MainViewModel {
         val input = uploadPic(path)
         val (matrix, factor, bias) = chooseFilter(filter)
         val result = when (method) {
-            "Sequential" -> convolute(input, matrix, factor, bias)
+            "Sequential" -> convolve(input, matrix, factor, bias)
             "Parallel pixel-wise" -> convolvePixel(input, matrix, factor, bias)
             "Parallel row-wise" -> convolveY(input, matrix, factor, bias)
             "Parallel column-wise" -> convolveX(input, matrix, factor, bias)
             "Parallel via frames" -> convolveFrame(input, matrix, factor, bias, frameW, frameH)
-            else -> convolute(input, matrix, factor, bias)
+            else -> convolve(input, matrix, factor, bias)
         }
 
         val typeInd = path.lastIndexOf('.')
