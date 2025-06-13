@@ -2,11 +2,11 @@ package model
 
 val BLUR =
     arrayOf(
-        doubleArrayOf(0.0, 0.2, 0.0),
-        doubleArrayOf(0.2, 0.2, 0.2),
-        doubleArrayOf(0.0, 0.2, 0.0),
+        doubleArrayOf(1.0, 1.0, 1.0),
+        doubleArrayOf(1.0, 1.0, 1.0),
+        doubleArrayOf(1.0, 1.0, 1.0),
     )
-const val FACTOR_BLUR = 1.0
+const val FACTOR_BLUR = 1.0/9.0
 const val BIAS_BLUR = 0.0
 
 val ID =
