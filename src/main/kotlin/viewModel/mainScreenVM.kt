@@ -2,6 +2,7 @@ package viewModel
 
 import kotlinx.coroutines.runBlocking
 import model.*
+import model.parallel.convoluteAsyncFrame
 import model.parallel.convoluteAsyncPixel
 import model.parallel.convoluteAsyncX
 import model.parallel.convoluteAsyncY
@@ -24,7 +25,7 @@ class MainViewModel {
         }
     }
 
-    fun applyFilter(filter: String, method: String, path: String): String = runBlocking {
+    fun applyFilter(filter: String, method: String, path: String, frameW: Int, frameH: Int): String = runBlocking {
         val input = uploadPic(path)
         val (matrix, factor, bias) = chooseFilter(filter)
         val result = when (method) {
@@ -32,6 +33,7 @@ class MainViewModel {
             "Parallel pixel-wise" -> convoluteAsyncPixel(input, matrix, factor, bias)
             "Parallel row-wise" -> convoluteAsyncY(input, matrix, factor, bias)
             "Parallel column-wise" -> convoluteAsyncX(input, matrix, factor, bias)
+            "Parallel via frames" -> convoluteAsyncFrame(input, matrix, factor, bias, frameW, frameH)
             else -> convolute(input, matrix, factor, bias)
         }
 

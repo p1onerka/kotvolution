@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +37,9 @@ fun mainScreen(viewModel: MainViewModel) {
     var selectedMethod by remember { mutableStateOf("") }
     var errMes by remember { mutableStateOf<String?>(null) }
     var isSmthRunning by remember {mutableStateOf(false)}
+    var frameWidth by remember {mutableStateOf(50)}
+    var frameHeight by remember {mutableStateOf(50)}
+    var frameSizeErr by remember {mutableStateOf<String?>(null)}
     val scope = rememberCoroutineScope()
 
     Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -146,6 +151,74 @@ fun mainScreen(viewModel: MainViewModel) {
                             selectedMethod = "Parallel column-wise"
                             methodsExpanded = false
                         }) { Text("Parallel column-wise", fontSize = fontSize, color = textColor) }
+                        DropdownMenuItem(onClick = {
+                            selectedMethod = "Parallel via frames"
+                            methodsExpanded = false
+                        }) { Text("Parallel via frames", fontSize = fontSize, color = textColor) }
+                    }
+                }
+
+                if (selectedMethod == "Parallel via frames") {
+                    Column (modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = "Choose frame size, default 50x50",
+                            fontSize = fontSize,
+                            color = buttonColor
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TextField(
+                            value = frameWidth.toString(),
+                            onValueChange = { newValue ->
+                                val num = newValue.toIntOrNull()
+                                if ((num != null) && (num > 0)) {
+                                    frameWidth = num
+                                    frameSizeErr = null
+                                } else {
+                                    frameSizeErr = "Width must be >0"
+                                }
+                            },
+                            label = {
+                                Text(
+                                    text = "Frame width:",
+                                    color = textColor
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = textColor,
+                                backgroundColor = buttonColor,
+                                cursorColor = Color.White,
+                                focusedIndicatorColor = Color.White
+                            )
+                        )
+                        TextField(
+                            value = frameHeight.toString(),
+                            onValueChange = { newValue ->
+                                val num = newValue.toIntOrNull()
+                                if ((num != null) && (num > 0)) {
+                                    frameHeight = num
+                                    frameSizeErr = null
+                                } else {
+                                    frameSizeErr = "Height must be >0"
+                                }
+                            },
+                            label = {
+                                Text(
+                                    text = "Frame height:",
+                                    color = textColor
+                                )
+                            },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = textColor,
+                                backgroundColor = buttonColor,
+                                cursorColor = Color.White,
+                                focusedIndicatorColor = Color.White
+                            )
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        frameSizeErr?.let {
+                            Text(it, color = Color.Red)
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
 
@@ -156,7 +229,7 @@ fun mainScreen(viewModel: MainViewModel) {
                         inputPath?.let { path ->
                             scope.launch(Dispatchers.IO) {
                                 isSmthRunning = true
-                                outputPath = viewModel.applyFilter(selectedFilter, selectedMethod, path)
+                                outputPath = viewModel.applyFilter(selectedFilter, selectedMethod, path, frameWidth, frameHeight)
                                 isSmthRunning = false
                             }
                         }
