@@ -6,7 +6,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  Tests:
+  Lint & Tests:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,6 +24,9 @@ jobs:
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
+
+      - name: Run linter (ktlint)
+        run: ./gradlew ktlintCheck
 
       - name: Run autotests
         run: ./gradlew test
