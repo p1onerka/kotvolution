@@ -1,11 +1,6 @@
 //import org.junit.jupiter.api.Assertions.assertEquals
 import kotlin.test.Test
-import model.*
-import model.parallel.convoluteAsyncX
 import model.sequential.convolute
-import org.bytedeco.opencv.global.opencv_imgcodecs
-import org.bytedeco.opencv.global.opencv_imgproc.*
-import org.bytedeco.opencv.opencv_core.Mat
 
 class SequentialTest: ConvolutionTestTemplate() {
     @Test
