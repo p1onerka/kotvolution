@@ -43,7 +43,8 @@ import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
 
 val fontSize = 20.sp
-val fontSizeSmaller = 10.sp
+
+// val fontSizeSmaller = 10.sp
 val buttonWidth = 220.dp
 val buttonHeight = 50.dp
 val buttonColor = Color(4, 52, 96)
